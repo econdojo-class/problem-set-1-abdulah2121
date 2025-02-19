@@ -1,0 +1,114 @@
+%------------%
+%  Preamble  %
+%------------%
+
+\documentclass[final,11pt]{article}
+\usepackage[paperwidth=9.0in, top=1.2in, bottom=1.2in, left=1.2in, right=1.2in]{geometry}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{mathpazo}
+\usepackage{threeparttable}
+\usepackage{eurosym}
+\usepackage[colorlinks, linkcolor=blue, anchorcolor=blue, citecolor=blue]{hyperref}
+
+\renewcommand{\headrulewidth}{0pt}
+\setlength{\arraycolsep}{10pt}
+\setlength\headheight{0.5cm}
+\setlength\headsep{0.8cm}
+\setlength\footskip{1.0cm}
+\setlength{\parindent}{0em}
+\pagestyle{fancy}
+\chead{\textcolor[rgb]{0.5,0.5,0.5}{\sc Spring 2025: ECON 3120}}
+
+%------------%
+%  Document  %
+%------------%
+
+\begin{document}
+\thispagestyle{empty}
+\begin{spacing}{1.25}
+
+\textbf{\ Abdulah Abrahim   Problem Set 1 Due: Feb. 18, 2025}\\
+
+(1) The Poisson distribution has probability mass function
+\begin{gather}
+    p(y_i|\theta)=\frac{\theta^{y_i}e^{-\theta}}{y_i!},\qquad \theta>0,\qquad y_i=0,1,\ldots
+\end{gather}
+and let $y_1,\ldots,y_n$ be random sample from this distribution.
+\begin{enumerate}
+    \item Show that the gamma distribution $\mathcal{G}(\alpha,\beta)$ is a conjugate prior distribution for the Poisson distribution.
+    \item Show that $\bar{y}$ is the MLE for $\theta$.
+    \item Write the mean of the posterior distribution as a weighted average of the mean of the prior distribution and the MLE.
+    \item What happens to the weight on the prior mean as $n$ becomes large?
+\end{enumerate}
+\textbf{Solution to Problem 1}
+
+\begin{enumerate}
+    \item The Gamma distribution is conjugate to the Poisson likelihood. The prior $\theta \sim \mathcal{G}(\alpha, \beta)$ has function:
+    \[
+        p(\theta) \propto \theta^{\alpha-1} e^{-\beta\theta}
+    \]
+    Given data $y_1, \ldots, y_n$, the posterior is:
+    \[
+        p(\theta | y) \propto \theta^{\sum y_i + \alpha -1} e^{-(n + \beta)\theta}
+    \]
+    This is $\mathcal{G}(\alpha + \sum y_i, \beta + n)$, confirming it is a conjugate prior.
+
+    \item $\bar{y}$ is the MLE for $\theta$, since log-likelihood is:
+    \[
+        \ell(\theta) = \sum y_i \log\theta - n\theta - \sum \log(y_i!)
+    \]
+    Taking derivative $\theta$:
+    \[
+        \frac{d\ell}{d\theta} = \frac{\sum y_i}{\theta} - n = 0 \implies \hat{\theta} = \bar{y}
+    \]
+    
+    \item Posterior mean $E[\theta | y] = \frac{\alpha + \sum y_i}{\beta + n}$. Let prior mean $\mu_0 = \alpha/\beta$. Then:
+    \[
+        E[\theta | y] = \left(\frac{\beta}{\beta + n}\right)\mu_0 + \left(\frac{n}{\beta + n}\right)\bar{y}
+    \]
+    
+    \item As $n \to \infty$, the weight on $\mu_0$ ($\beta/(\beta + n)$) approaches 0. The posterior mean converges to the MLE.
+\end{enumerate}
+
+\newpage
+
+(2) Consider the following two sets of data obtained after tossing a die 100 and 1000 times, respectively:
+\begin{center}
+    \begin{tabular}{ r r r r r r r }
+        \hline
+        $n$ & 1 & 2 & 3 & 4 & 5 & 6 \\
+        \hline
+        100 & 19 & 12 & 17 & 18 & 20 & 14 \\  
+        1000 & 190 & 120 & 170 & 180 & 200 & 140 \\
+        \hline
+    \end{tabular}
+\end{center}
+Suppose you are interested in $\theta_1$, the probability of obtaining a one spot. Assume your prior for all the probabilities is a Dirichlet distribution, where each $\alpha_i=2$. Compute the posterior distribution for $\theta_1$ for each of the sample sizes in the table. Plot the resulting distribution and compare the results. Comment on the effect of having a larger sample.
+
+\textbf{Solution to Problem 2}
+
+The Dirichlet posterior for $\theta$ with prior $\alpha_i = 2$ and counts $x_i$ is:
+\[
+    \theta | y \sim \text{Dirichlet}(\alpha_1 + x_1, \ldots, \alpha_6 + x_6)
+\]
+For $\theta_1$:
+\begin{itemize}
+    \item \textbf{n=100}: Posterior $\alpha_1' = 2 + 19 = 21$, total $\alpha_0' = 12 + \sum (2 + x_i) = 12 + 100 + 6*2 = 112$
+    \item \textbf{n=1000}: $\alpha_1' = 2 + 190 = 192$, $\alpha_0' = 12 + 1000 + 12 = 1012$
+\end{itemize}
+
+The marginal distribution of $\theta_1$ is Beta($\alpha_1'$, $\alpha_0' - \alpha_1'$). For n=100: Beta(21, 91); for n=1000: Beta(192, 820). 
+
+As sample size increases:
+\begin{itemize}
+    \item Posterior variance decreases, posterior concentrates around MLE ($\hat{\theta}_1 = 0.19$ for n=100; 0.19 for n=1000), and Prior influence diminishes (weights 12 vs 100 and 12 vs 1000)
+\end{itemize}
+\end{spacing}
+\end{document}
